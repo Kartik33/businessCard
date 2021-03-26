@@ -16,14 +16,13 @@ def home(request):
     return HttpResponse('<p>home view</p>')
 
 @login_required()
-@require_http_methods(['GET','DELETE','PATCH'])
+@require_http_methods(['GET','DELETE','POST'])
 def users(request,user_id):
-    print("inside users")
     validate_user(request,user_id)
     user = request.user
     pathMapping = {'GET':detailed_user,
                    'DELETE':delete_user,
-                   'PATCH':update_user}
+                   'POST':update_user}
     return pathMapping[request.method](request,user_id)
 
 #do not call this fucntion directly come from users()
@@ -53,36 +52,38 @@ def delete_user(request,user_id):
 
 #do not calls this fucntion directly come from users()
 def update_user(request,user_id):
-    user = Profile.objects.get(user__id=user_id)
-    image = request.PATCH.get('image',None)
-    name = request.PATCH.get('name',None)
+    profile = Profile.objects.get(user__id=user_id)
+    image = request.POST.get('image',None)
+    name = request.POST.get('name',None)
     #age = request.PATCH.get('age',None)
     #birthday = request.PATCH.get('birthday',None)
     #employer = request.PATCH.get('employer',None)
     #location = request.PATCH.get('location'None)
     #phone = request.PATCH.get('phone',None)
     #jobtitle = request.PATCH.get('jobtitle',None)
-    
-    if image: # and name and age and birthday and employer and location\
+
+    if image and name:# and age and birthday and employer and location\
             #and phone and jobtitle:
-        user.user.name = name
-        user.image = image
+        profile.user.name = name
+        profile.image = image
         #uuser.age = requ
         #uuser.birthday =
         #uuser.employer =
         #uuser.location =
         #uuser.phone = re
         #uuser.jobtitle =
-        user.save()
+        profile.user.save()
+        return redirect(f"/users/{user_id}/") 
 
+    return error(400, "Failed to update the user") 
 
-    return 
 
 @require_http_methods(['POST'])
 def login_user(request):
     username = request.POST['username']
     password = request.POST['password']
     user = authenticate(request, username=username, password=password)
+    return JsonResponse({"kartik":"kartik"})
     if user:
         login(request,user)
         return redirect(f"/users/{user.id}/") 
@@ -93,10 +94,8 @@ def login_user(request):
 
 @require_http_methods(['POST'])
 def sign_up(request):
-    print(request.POST)
     form = SignUpForm(request.POST)
     if form.is_valid():
-        print('form valid')
         user = form.save()
         user.refresh_from_db()
         user.profile.image=form.cleaned_data.get('image')
@@ -122,7 +121,8 @@ def logout_user(request):
     
 def getToken(request):
     csrf_token = get_token(request)
-    return HttpResponse(f'<p>{csrf_token}</p>')
+    return JsonResponse({"csrftoken":csrf_token,
+        "sessionid":request.session.session_key})
 
 def error(code,msg):
     return JsonResponse({"Status":"Fail",
