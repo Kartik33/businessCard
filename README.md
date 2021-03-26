@@ -3,12 +3,14 @@ This is basic Django authentication web app. The user can sign-up, sign-in, upda
 
 ## Requirements 
 
+
+##### You must have postgres installed, name and password of the user handy, <a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-18-04">for ubuntu installation you check this link.</a>
+
 ```pip install django==3.0.3
 pip install psycopg2
 pip install django-cors-headers
 ```
 
-##### You must have postgres installed, name and password of the user handy, <a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-18-04">for ubuntu installation you check this link.</a>
 
 
 
