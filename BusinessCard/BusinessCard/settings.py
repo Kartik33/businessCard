@@ -91,9 +91,9 @@ WSGI_APPLICATION = 'BusinessCard.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'business_card',
-        'USER': 'kartik',
-        'PASSWORD': 'word',
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '5432',
     }
